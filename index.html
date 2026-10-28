@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Familien-Wichteln</title>
+<meta name="robots" content="noindex">
+<style>
+  :root {
+    --bg: #f7f1e8;
+    --card: #fffdf9;
+    --ink: #2b211c;
+    --muted: #7a6a5f;
+    --line: #e6dccd;
+    --accent: #b3261e;
+    --accent-ink: #fff;
+    --pine: #2f5d50;
+    --field: #fff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14201c;
+      --card: #1d2b26;
+      --ink: #f1ebe2;
+      --muted: #a9b5ae;
+      --line: #2f403a;
+      --accent: #e0574c;
+      --accent-ink: #fff;
+      --pine: #8cc7b2;
+      --field: #16231f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14201c; --card: #1d2b26; --ink: #f1ebe2; --muted: #a9b5ae;
+    --line: #2f403a; --accent: #e0574c; --accent-ink: #fff; --pine: #8cc7b2; --field: #16231f;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    padding: 32px 16px 64px;
+  }
+  main { max-width: 520px; margin: 0 auto; }
+  h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 600;
+    font-size: 2rem;
+    line-height: 1.15;
+    margin: 0 0 6px;
+  }
+  h2 { font-size: 1rem; margin: 0 0 12px; }
+  p { margin: 0 0 12px; }
+  .muted { color: var(--muted); font-size: .9rem; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 20px;
+  }
+  label { display: block; font-size: .85rem; color: var(--muted); margin-bottom: 4px; }
+  input, textarea {
+    width: 100%;
+    font: inherit;
+    color: var(--ink);
+    background: var(--field);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+  textarea { resize: vertical; min-height: 44px; }
+  input:focus, textarea:focus { outline: 2px solid var(--pine); outline-offset: 1px; border-color: transparent; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .person { display: grid; gap: 6px; padding: 12px 0; border-top: 1px solid var(--line); }
+  .person:first-child { border-top: 0; padding-top: 0; }
+  .person-head { display: flex; gap: 8px; }
+  .person-head input { flex: 1; }
+  button {
+    font: inherit;
+    cursor: pointer;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    padding: 10px 14px;
+  }
+  button.primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: var(--accent);
+    font-weight: 600;
+    width: 100%;
+    padding: 14px;
+    margin-top: 20px;
+  }
+  button.icon { padding: 10px 12px; color: var(--muted); }
+  button.link { border: 0; padding: 8px 0; color: var(--pine); font-weight: 600; }
+  .error { color: var(--accent); font-weight: 600; margin-top: 12px; }
+  .result { display: flex; align-items: center; gap: 8px; padding: 10px 0; border-top: 1px solid var(--line); }
+  .result:first-child { border-top: 0; }
+  .result .name { flex: 1; font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+  .result .sent { color: var(--pine); font-size: .85rem; }
+  .result button { padding: 8px 10px; font-size: .9rem; }
+  .hint { background: color-mix(in srgb, var(--accent) 12%, transparent); border-radius: 10px; padding: 10px 12px; font-size: .9rem; margin-top: 12px; }
+
+  /* reveal */
+  .reveal { text-align: center; }
+  .envelope {
+    width: 100%;
+    margin-top: 28px;
+    padding: 48px 20px;
+    border-radius: 20px;
+    border: 2px dashed var(--accent);
+    background: var(--card);
+    font-size: 1.1rem;
+  }
+  .envelope .big { font-size: 3rem; display: block; margin-bottom: 8px; }
+  .recipient {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(2.2rem, 10vw, 3.4rem);
+    color: var(--accent);
+    line-height: 1.1;
+    margin: 8px 0 4px;
+    overflow-wrap: anywhere;
+  }
+  .facts { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-top: 4px; }
+  .facts div { font-size: .85rem; color: var(--muted); }
+  .facts strong { display: block; font-size: 1.1rem; color: var(--ink); }
+  .people { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .people li { background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-weight: 600; }
+  .back { display: inline-block; margin-top: 20px; color: var(--pine); font-weight: 600; text-decoration: none; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main id="app"></main>
+
+<script>
+// ============ Hier anpassen ============
+const CONFIG = {
+  title: 'Familien-Wichteln',
+  organizer: 'Tim',
+  budget: '',   // z. B. '25 €'
+  date: '',     // z. B. '2026-12-24'
+  people: ['Tim', 'Lisa', 'Andrea', 'Elisa', 'Manuel', 'Oliver'],
+};
+// =======================================
+
+const STORE = 'wichteln-draw-v3';
+const WISH = 'wichteln-wish';
+const $ = (sel, el = document) => el.querySelector(sel);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const baseUrl = () => location.href.split('#')[0];
+
+// --- Encoding: the personal link carries the draw in the #hash (never sent to a server) ---
+function encode(obj) {
+  const bytes = new TextEncoder().encode(JSON.stringify(obj));
+  let bin = '';
+  bytes.forEach(b => bin += String.fromCharCode(b));
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+function decode(str) {
+  const bin = atob(str.replace(/-/g, '+').replace(/_/g, '/'));
+  return JSON.parse(new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0))));
+}
+
+// --- Draw: shuffle, then everyone gifts the next person in the circle (nobody draws themselves) ---
+function randInt(max) {
+  const a = new Uint32Array(1);
+  crypto.getRandomValues(a);
+  return a[0] % max;
+}
+function draw(people) {
+  const order = people.slice();
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = randInt(i + 1);
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  return order.map((giver, i) => ({ giver, recipient: order[(i + 1) % order.length] }));
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso + 'T12:00:00');
+  return isNaN(d) ? iso : d.toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'long' });
+}
+function factsHtml() {
+  if (!CONFIG.budget && !CONFIG.date) return '';
+  return `<div class="facts">
+    ${CONFIG.budget ? `<div>Budget<strong>${esc(CONFIG.budget)}</strong></div>` : ''}
+    ${CONFIG.date ? `<div>Bescherung<strong>${esc(formatDate(CONFIG.date))}</strong></div>` : ''}
+  </div>`;
+}
+
+function storageGet(key) { try { return localStorage.getItem(key); } catch { return null; } }
+function storageSet(key, val) { try { localStorage.setItem(key, val); } catch {} }
+
+async function copy(text, btn) {
+  try { await navigator.clipboard.writeText(text); btn.textContent = 'Kopiert ✓'; }
+  catch { prompt('Kopieren:', text); }
+}
+
+// ================= Public overview =================
+function renderOverview() {
+  document.title = CONFIG.title;
+  $('#app').innerHTML = `
+    <h1>${esc(CONFIG.title)} 🎁</h1>
+    <p class="muted">Jeder beschenkt heimlich eine andere Person. Wen du beschenkst, verrät dir dein persönlicher Link von ${esc(CONFIG.organizer)}.</p>
+
+    ${factsHtml() ? `<div class="card">${factsHtml()}</div>` : ''}
+
+    <div class="card">
+      <h2>Wer macht mit? (${CONFIG.people.length})</h2>
+      <ul class="people">${CONFIG.people.map(n => `<li>${esc(n)}</li>`).join('')}</ul>
+    </div>
+
+    <div class="card">
+      <h2>Dein Wunschzettel</h2>
+      <p class="muted">Schreib auf, worüber du dich freuen würdest, und schick es in die Familiengruppe. Dein Wichtel liest dort mit, ohne sich zu verraten.</p>
+      <textarea id="mywish" rows="4" placeholder="z. B. ein gutes Buch, Wollsocken, Kaffee …">${esc(storageGet(WISH) || '')}</textarea>
+      <div class="row2" style="margin-top:12px">
+        <button id="wishWa">In die Gruppe schicken</button>
+        <button id="wishCopy">Kopieren</button>
+      </div>
+    </div>
+  `;
+  const wish = () => $('#mywish').value.trim();
+  const wishText = () => `🎁 Mein Wunschzettel:\n${wish()}`;
+  $('#mywish').oninput = e => storageSet(WISH, e.target.value);
+  $('#wishWa').onclick = () => {
+    if (!wish()) return $('#mywish').focus();
+    window.open('https://wa.me/?text=' + encodeURIComponent(wishText()), '_blank');
+  };
+  $('#wishCopy').onclick = e => wish() ? copy(wishText(), e.target) : $('#mywish').focus();
+}
+
+// ================= Personal reveal =================
+function renderReveal(data) {
+  document.title = 'Dein Wichtel 🎁';
+  $('#app').innerHTML = `
+    <div class="reveal">
+      <h1>Hallo ${esc(data.g)}!</h1>
+      <p class="muted">Pssst – das hier ist nur für dich.</p>
+      <button class="envelope" id="open"><span class="big">✉️</span>Tippen zum Aufdecken</button>
+      <div id="secret" hidden>
+        <div class="card">
+          <p class="muted">Du bist Wichtel für</p>
+          <div class="recipient">${esc(data.r)}</div>
+          ${factsHtml()}
+        </div>
+        <p class="muted" style="margin-top:16px">Den Wunschzettel von ${esc(data.r)} findest du in der Familiengruppe.</p>
+      </div>
+      <a class="back" href="${esc(baseUrl())}">Zur Übersicht &amp; eigenem Wunschzettel →</a>
+    </div>
+  `;
+  $('#open').onclick = () => { $('#open').hidden = true; $('#secret').hidden = false; };
+}
+
+// ================= Organizer (open with #orga) =================
+function loadDraw() {
+  try {
+    const d = JSON.parse(storageGet(STORE));
+    // Discard a stored draw if the participant list was changed since
+    return d && d.people.join('|') === CONFIG.people.join('|') ? d : null;
+  } catch { return null; }
+}
+function saveDraw(d) { storageSet(STORE, JSON.stringify(d)); }
+
+function renderOrga() {
+  document.title = 'Auslosen – ' + CONFIG.title;
+  const d = loadDraw();
+  if (!d) {
+    $('#app').innerHTML = `
+      <h1>Auslosen 🎲</h1>
+      <p class="muted">Danach bekommst du für jede Person einen eigenen Link. Du siehst dabei selbst nicht, wer wen hat.</p>
+      <div class="card"><ul class="people">${CONFIG.people.map(n => `<li>${esc(n)}</li>`).join('')}</ul></div>
+      ${location.protocol === 'file:' ? `<p class="hint">Die Seite läuft gerade nur lokal. Erst auslosen, wenn sie online ist – sonst funktionieren die Links bei den anderen nicht.</p>` : ''}
+      <button class="primary" id="go">Jetzt auslosen</button>
+    `;
+    $('#go').onclick = () => {
+      saveDraw({
+        people: CONFIG.people,
+        links: draw(CONFIG.people).map(({ giver, recipient }) => ({
+          name: giver,
+          url: baseUrl() + '#w=' + encode({ g: giver, r: recipient }),
+          sent: false,
+        })),
+      });
+      renderOrga();
+    };
+    return;
+  }
+
+  $('#app').innerHTML = `
+    <h1>Ausgelost! 🎄</h1>
+    <p class="muted">Schick jeder Person ihren eigenen Link – einzeln, nicht in die Gruppe. Nicht selbst öffnen, sonst ist die Überraschung weg.</p>
+    <div class="card" id="links">
+      ${d.links.map((l, i) => `
+        <div class="result" data-i="${i}">
+          <span class="name">${esc(l.name)}</span>
+          ${l.sent ? '<span class="sent">✓ verschickt</span>' : ''}
+          <button class="wa">WhatsApp</button>
+          <button class="copy">Kopieren</button>
+        </div>`).join('')}
+    </div>
+    <button class="link" id="redo">Nochmal neu auslosen</button>
+  `;
+  $('#links').addEventListener('click', e => {
+    const row = e.target.closest('.result');
+    if (!row || e.target.tagName !== 'BUTTON') return;
+    const l = d.links[row.dataset.i];
+    const text = `Hallo ${l.name}! 🎁 Hier ist dein geheimer Wichtel-Link – nur für dich:\n${l.url}`;
+    if (e.target.classList.contains('wa')) window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+    else copy(text, e.target);
+    l.sent = true;
+    saveDraw(d);
+    if (!row.querySelector('.sent')) row.querySelector('.name').insertAdjacentHTML('afterend', '<span class="sent">✓ verschickt</span>');
+  });
+  $('#redo').onclick = () => {
+    if (!confirm('Wirklich neu auslosen? Alle schon verschickten Links passen dann nicht mehr.')) return;
+    storageSet(STORE, '');
+    renderOrga();
+  };
+}
+
+// ================= Router =================
+function route() {
+  const m = location.hash.match(/^#w=(.+)$/);
+  if (m) {
+    try { renderReveal(decode(m[1])); }
+    catch { $('#app').innerHTML = '<h1>Hm.</h1><p>Dieser Link ist unvollständig. Bitte frag nochmal nach.</p>'; }
+  } else if (location.hash === '#orga') {
+    renderOrga();
+  } else {
+    renderOverview();
+  }
+  window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', route);
+route();
+</script>
+</body>
+</html>
